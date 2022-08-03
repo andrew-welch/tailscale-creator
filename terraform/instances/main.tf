@@ -164,3 +164,4 @@ resource "azurerm_network_interface" "extnic" {
   }
 }
 
+#poke
