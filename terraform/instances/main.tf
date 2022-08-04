@@ -92,7 +92,7 @@ resource "azurerm_subnet_network_security_group_association" "nsg-sn-conn" {
   network_security_group_id = azurerm_network_security_group.vpn-NSG.id
 }
 
-resource "azurerm_linux_virtual_machine" "WG-VPN" {
+resource "azurerm_linux_virtual_machine" "TS-VPN" {
   name                = "Tailscale-VPN"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
@@ -148,7 +148,7 @@ resource "azurerm_linux_virtual_machine" "WG-VPN" {
 }
 
 resource "azurerm_public_ip" "pip" {
-  name                = "WG-pip"
+  name                = "TS-pip"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   allocation_method   = "Static"
