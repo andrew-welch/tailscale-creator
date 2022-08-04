@@ -128,7 +128,7 @@ resource "azurerm_linux_virtual_machine" "WG-VPN" {
   provisioner "remote-exec" {
     inline = [
       "sudo apt-get update",
-      "sudo apt-get -y install gnupg2",
+      "sudo apt-get -y install gnupg",
       
       "curl -fsSL https://pkgs.tailscale.com/stable/debian/buster.gpg | sudo apt-key add -",
       "curl -fsSL https://pkgs.tailscale.com/stable/debian/buster.list | sudo tee /etc/apt/sources.list.d/tailscale.list",
