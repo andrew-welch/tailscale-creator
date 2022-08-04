@@ -148,7 +148,7 @@ resource "azurerm_linux_virtual_machine" "TS-VPN" {
       "sudo sysctl -p /etc/sysctl.conf",
 
       "sudo apt-get -y install tailscale",
-      "sudo tailscale up --advertise-routes=172.30.0.0/16,168.63.129.16/32 --accept-dns=false --authkey ${var.TAILSCALE_AUTHKEY} --advertise-exit-node",
+      "sudo tailscale up --advertise-routes=172.30.0.0/16,168.63.129.16/32 --accept-dns=false --authkey ${var.TAILSCALE_AUTHKEY} --advertise-exit-node --advertise-tags=tag:server",
 
     ]
   }
