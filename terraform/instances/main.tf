@@ -32,8 +32,8 @@ provider "azurerm" {
 }
 
 data "azurerm_public_ip_prefix" "owned-prefix" {
-  name                = "VPN-global"
-  resource_group_name = "prefixs-vpn"
+  name                = "prefixs-vpn"
+  resource_group_name = "VPN-global"
 }
 
 
