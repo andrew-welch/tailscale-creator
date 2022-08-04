@@ -176,7 +176,7 @@ resource "azurerm_network_interface" "extnic" {
     name                          = "primary"
     subnet_id                     = azurerm_subnet.singlenet.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.prefixed-ip.id
+    public_ip_address_id          = data.azurerm_public_ip.prefixed-ip.id
   }
 }
 
