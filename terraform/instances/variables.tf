@@ -13,6 +13,10 @@ variable "VM_PASSWORD" {
   # Pulled from GitHub secrets
 }
 
+variable "TAILSCALE_AUTHKEY" {
+  type = string
+  # Pulled from GitHub secrets
+}
 
 
 variable "domain-name" {
