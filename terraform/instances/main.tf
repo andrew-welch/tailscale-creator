@@ -165,7 +165,7 @@ resource "azurerm_public_ip" "pip" {
   name                = "TS-pip-${random_string.randomstr.result}"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
-  public_ip_prefix_id = data.azurerm_public_ip_prefix.owned-prefix
+  public_ip_prefix_id = data.azurerm_public_ip_prefix.owned-prefix.id
   allocation_method   = "Static"
   sku                 = "Standard"
 }
