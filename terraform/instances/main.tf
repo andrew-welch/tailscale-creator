@@ -115,6 +115,7 @@ resource "azurerm_linux_virtual_machine" "WG-VPN" {
     offer = "debian-10"
     publisher = "debian"
     sku = "10"
+    version = "latest"
   }
 
   connection {
