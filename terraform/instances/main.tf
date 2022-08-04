@@ -5,7 +5,10 @@ terraform {
       source  = "hashicorp/azurerm"
       version = ">= 3.8.0"
     }
-
+    random = {
+      source  = "hashicorp/random"
+      version = "= 3.2.0"
+    }
   }
 
   required_version = ">= 1.1.0"
@@ -17,6 +20,11 @@ terraform {
     }
   }
 
+}
+
+resource "random_string" "randomstr" {
+  length           = 6
+  special          = false
 }
 
 provider "azurerm" {
@@ -93,7 +101,7 @@ resource "azurerm_subnet_network_security_group_association" "nsg-sn-conn" {
 }
 
 resource "azurerm_linux_virtual_machine" "TS-VPN" {
-  name                = "Tailscale-VPN"
+  name                = "Tailscale-VPN-${random_string.randomstr.result}"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   size                = "Standard_B1s"
