@@ -31,10 +31,12 @@ provider "azurerm" {
   features {}
 }
 
-data "azurerm_public_ip" "prefixed-ip" {
-  name                = "TS-IP"
-  resource_group_name = "vpn-global"
+data "azurerm_public_ip_prefix" "owned-prefix" {
+  name                = "prefixs-vpn"
+  resource_group_name = "VPN-global"
 }
+
+
 
 
 
@@ -158,15 +160,16 @@ resource "azurerm_linux_virtual_machine" "TS-VPN" {
   }
 
 }
-/*
+
 resource "azurerm_public_ip" "pip" {
-  name                = "TS-pip"
+  name                = "TS-pip-${random_string.randomstr.result}"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
+  public_ip_prefix_id = data.azurerm_public_ip_prefix.owned-prefix.id
   allocation_method   = "Static"
   sku                 = "Standard"
 }
-*/
+
 resource "azurerm_network_interface" "extnic" {
   name                = "single-nic"
   location            = azurerm_resource_group.rg.location
@@ -176,7 +179,7 @@ resource "azurerm_network_interface" "extnic" {
     name                          = "primary"
     subnet_id                     = azurerm_subnet.singlenet.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = data.azurerm_public_ip.prefixed-ip.id
+    public_ip_address_id          = azurerm_public_ip.pip.id
   }
 }
 
