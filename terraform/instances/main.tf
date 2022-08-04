@@ -127,6 +127,9 @@ resource "azurerm_linux_virtual_machine" "WG-VPN" {
 
   provisioner "remote-exec" {
     inline = [
+      "sudo apt-get update",
+      "sudo apt-get -y install gnupg",
+      
       "curl -fsSL https://pkgs.tailscale.com/stable/debian/buster.gpg | sudo apt-key add -",
       "curl -fsSL https://pkgs.tailscale.com/stable/debian/buster.list | sudo tee /etc/apt/sources.list.d/tailscale.list",
 
@@ -137,7 +140,7 @@ resource "azurerm_linux_virtual_machine" "WG-VPN" {
       "sudo sysctl -p /etc/sysctl.conf",
 
       "sudo apt-get -y install tailscale",
-      "tailscale up --advertise-routes=172.30.0.0/16,168.63.129.16/32 --accept-dns=false --authkey ${var.TAILSCALE_AUTHKEY} --advertise-exit-node",
+      "sudo tailscale up --advertise-routes=172.30.0.0/16,168.63.129.16/32 --accept-dns=false --authkey ${var.TAILSCALE_AUTHKEY} --advertise-exit-node",
 
     ]
   }
