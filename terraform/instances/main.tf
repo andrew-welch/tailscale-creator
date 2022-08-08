@@ -206,17 +206,33 @@ resource "azurerm_key_vault" "keyvault" {
 
   sku_name = "standard"
 
-  access_policy {
+
+}
+
+
+resource "azurerm_key_vault_access_policy"  "access_policy_CLI" {
     tenant_id = data.azurerm_client_config.current_config.tenant_id
     object_id = data.azurerm_client_config.current_config.object_id
-    
+    key_vault_id = azurerm_key_vault.keyvault.id
 
     secret_permissions = [
-      "Get", "List"
+      "Get", "List", "Delete", "Set"
     ]
 
   }
-}
+
+resource "azurerm_key_vault_access_policy"  "access_policy_VM" {
+    tenant_id = data.azurerm_client_config.current_config.tenant_id
+    object_id = azurerm_linux_virtual_machine.TS-VPN.identity.0.principal_id
+    key_vault_id = azurerm_key_vault.keyvault.id
+    
+
+    secret_permissions = [
+      "Get", "List" 
+    ]
+
+  }
+
 
 resource "azurerm_key_vault_secret" "tailscale-authkey" {
   name         = "tailscale-authkey"
