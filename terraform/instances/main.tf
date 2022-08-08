@@ -177,6 +177,7 @@ resource "azurerm_public_ip" "pip" {
   public_ip_prefix_id = data.azurerm_public_ip_prefix.owned-prefix.id
   allocation_method   = "Static"
   sku                 = "Standard"
+  zones               = ["1","2","3"]
 }
 
 resource "azurerm_network_interface" "extnic" {
