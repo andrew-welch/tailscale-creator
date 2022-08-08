@@ -207,7 +207,7 @@ resource "azurerm_key_vault" "keyvault" {
 
   access_policy {
     tenant_id = data.azurerm_client_config.current_config.tenant_id
-    object_id = azurerm_linux_virtual_machine.TS-VPN.id
+    object_id = azurerm_linux_virtual_machine.TS-VPN.identity.principal_id
     
 
     secret_permissions = [
