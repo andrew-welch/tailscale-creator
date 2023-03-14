@@ -382,7 +382,7 @@ resource "azurerm_network_interface" "extnic2" {
   enable_ip_forwarding = true
   ip_configuration {
     name                          = "primary"
-    subnet_id                     = azurerm_subnet.singlenet.id
+    subnet_id                     = azurerm_subnet.singlenet2.id
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.pip2.id #edit to dynamic
   }
