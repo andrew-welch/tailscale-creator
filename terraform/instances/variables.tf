@@ -7,6 +7,16 @@ variable "resource_group_name" {
 }
 
 
+variable "resource_2_location" {
+  default = "southeastasia"
+}
+
+variable "resource_group_2_name" {
+  default = "az-tailscale_sea"
+}
+
+
+
 
 variable "VM_PASSWORD" {
   type = string
