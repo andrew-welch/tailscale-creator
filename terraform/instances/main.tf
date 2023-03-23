@@ -251,164 +251,19 @@ resource "azurerm_key_vault_secret" "tailscale-authkey" {
 #poke
 #poke
 
-#SEA
-
-resource "azurerm_resource_group" "rg2" {
-  name     = var.resource_group_2_name
-  location = var.resource_2_location
-  tags = {
-  	ManagedBy = "Terraform"
-    
-  }
-}
 
 
-# Create a virtual network
-resource "azurerm_virtual_network" "vnet2" {
-  name                = "tailscale-VPN-vnet2"
-  address_space       = ["172.31.0.0/16"]
-  location            = azurerm_resource_group.rg2.location
-  resource_group_name = azurerm_resource_group.rg2.name
-}
-
-resource "azurerm_subnet" "singlenet2" {
-  name                = "tailscale-VPN-single2"
-  address_prefixes    = ["172.31.1.0/24"]
-  resource_group_name = azurerm_resource_group.rg2.name
-  virtual_network_name=azurerm_virtual_network.vnet2.name
-}
 
 
-resource "azurerm_network_security_group" "vpn-NSG2" {
-  name                = "tailscale_webserver2"
-  location            = azurerm_resource_group.rg2.location
-  resource_group_name = azurerm_resource_group.rg2.name
-}
-
-resource "azurerm_network_security_rule" "nsr-WG2" {
-  name                        = "tailscale-traffic2"
-  priority                    = 105
-  direction                   = "Inbound"
-  access                      = "Allow"
-  protocol                    = "Udp"
-  source_port_range           = "*"
-  destination_port_range      = "41641"
-  source_address_prefix       = "*"
-  destination_address_prefix  = "*"
-  resource_group_name         = azurerm_resource_group.rg2.name
-  network_security_group_name = azurerm_network_security_group.vpn-NSG2.name
-}
-
-resource "azurerm_network_security_rule" "nsr-SSH2" {
-  name                        = "temp-ssh"
-  priority                    = 106
-  direction                   = "Inbound"
-  access                      = "Allow"
-  protocol                    = "Tcp"
-  source_port_range           = "*"
-  destination_port_range      = "22"
-  source_address_prefix       = "*"
-  destination_address_prefix  = "*"
-  resource_group_name         = azurerm_resource_group.rg2.name
-  network_security_group_name = azurerm_network_security_group.vpn-NSG2.name
-}
-
-resource "azurerm_subnet_network_security_group_association" "nsg-sn-conn2" {
-  subnet_id      = azurerm_subnet.singlenet2.id
-  network_security_group_id = azurerm_network_security_group.vpn-NSG2.id
-}
-
-resource "azurerm_linux_virtual_machine" "TS-VPN-SEA" {
-  name                = "Tailscale-VPN-${random_string.randomstr2.result}"
-  resource_group_name = azurerm_resource_group.rg2.name
-  location            = azurerm_resource_group.rg2.location
-  size                = "Standard_B1s"
-  admin_username      = "tailscale-vm-admin"
-  network_interface_ids = [
-    azurerm_network_interface.extnic2.id,
-  ]
-  admin_password = var.VM_PASSWORD
-  disable_password_authentication = false
-
-  os_disk {
-    caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
-  }
-
-  source_image_reference {
-    offer = "debian-10"
-    publisher = "debian"
-    sku = "10"
-    version = "latest"
-  }
-
-  identity {
-    type = "SystemAssigned"
-  }
-
-  connection {
-    type = "ssh"
-    user = self.admin_username
-    password = var.VM_PASSWORD
-    host = self.public_ip_address
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "sudo apt-get update",
-      "sudo apt-get -y install gnupg",
-      
-      "curl -fsSL https://pkgs.tailscale.com/stable/debian/buster.gpg | sudo apt-key add -",
-      "curl -fsSL https://pkgs.tailscale.com/stable/debian/buster.list | sudo tee /etc/apt/sources.list.d/tailscale.list",
-
-      "sudo apt-get update",
-      "sudo apt-get -y upgrade",
-      "sudo sysctl -w net.ipv4.ip_forward=1",
-      "echo \"net.ipv4.ip_forward = 1\" | sudo tee -a  /etc/sysctl.conf",
-      "sudo sysctl -p /etc/sysctl.conf",
-
-      "sudo apt-get -y install tailscale",
-      "sudo tailscale up --advertise-routes=172.31.0.0/16,168.63.129.16/32 --accept-dns=false --authkey ${var.TAILSCALE_AUTHKEY} --advertise-exit-node --advertise-tags=tag:server",
-
-    ]
-  }
-
-}
-
-resource "azurerm_network_interface" "extnic2" {
-  name                = "single-nic2"
-  location            = azurerm_resource_group.rg2.location
-  resource_group_name = azurerm_resource_group.rg2.name
-  enable_ip_forwarding = true
-  ip_configuration {
-    name                          = "primary"
-    subnet_id                     = azurerm_subnet.singlenet2.id
-    private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.pip2.id #edit to dynamic
-  }
-}
-
-resource "azurerm_public_ip" "pip2" {
-  name                = "TS-pip-${random_string.randomstr2.result}"
-  resource_group_name = azurerm_resource_group.rg2.name
-  location            = azurerm_resource_group.rg2.location
-  allocation_method   = "Static"
-  sku                 = "Standard"
-  zones               = ["1","2","3"]
-}
 
 
-resource "azurerm_key_vault_access_policy"  "access_policy_VM2" {
-    tenant_id = data.azurerm_client_config.current_config.tenant_id
-    object_id = azurerm_linux_virtual_machine.TS-VPN-SEA.identity.0.principal_id
-    key_vault_id = azurerm_key_vault.keyvault.id
-    
 
-    secret_permissions = [
-      "Get", "List" 
-    ]
 
-  }
+
+
+
+
+
 
 
 
