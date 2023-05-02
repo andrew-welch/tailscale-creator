@@ -250,7 +250,7 @@ resource "azurerm_key_vault_secret" "tailscale-authkey" {
 #poke
 #poke
 #poke
-
+#bump to update TS to 1.40
 
 
 
